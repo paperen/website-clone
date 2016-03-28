@@ -11,6 +11,5 @@ tion])
 
 __例子(example)__
 
-py clone.py -u paperen.com
-
-clone -u paperen.com -d test (windows下)
+* py clone.py -u paperen.com
+* clone -u paperen.com -d test (windows下)
