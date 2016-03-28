@@ -78,11 +78,13 @@ def main():
 		# <link rel="stylesheet" type="text/css" href="http://events.hytera.com/theme/hytera/common.css" media="all" />
 		# <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
 		sys.stdout.write( u"开始爬取css" )
-		css = re.findall(r"<\s*link\s+[^>]+href\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>", html)
+		css = re.findall(r"<\s*link\s+[^>]*href\s*=\s*[\"|\'](.*?)[\"|\'][^>]+[\s\S]*?>", html)
 		total = len(css)
 		for v in css:
 			if (v.find('http://') == -1 and v.find(domain) != -1) or v.find('.css') != -1:
-				html = html.replace(v,t.get(v))
+				r = t.get(v)
+				print r
+				html = html.replace(v,r)
 			show_progress()
 		sys.stdout.flush()
 		print u"爬取css完成"
