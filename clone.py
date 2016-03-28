@@ -82,9 +82,7 @@ def main():
 		total = len(css)
 		for v in css:
 			if (v.find('http://') == -1 and v.find(domain) != -1) or v.find('.css') != -1:
-				r = t.get(v)
-				print r
-				html = html.replace(v,r)
+				html = html.replace(v,r = t.get(v))
 			show_progress()
 		sys.stdout.flush()
 		print u"爬取css完成"
