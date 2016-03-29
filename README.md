@@ -1,6 +1,8 @@
 # website-clone
 
-扒站小能手
+__扒站小能手__
+
+将指定页面的css、js、image（包括css内的）都爬取到本地并自动建立相应文件夹结构
 
 __说明__
 
@@ -12,6 +14,6 @@ tion])
 __例子(example)__
 
 * py clone.py -u paperen.com
-* clone -u paperen.com -d test (windows下)
+* clone -u paperen.com -d test (windows下exe)
 
 [http://paperen.com/post/website-clone](http://paperen.com/post/website-clone "扒站小能手")
