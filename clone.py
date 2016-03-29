@@ -48,7 +48,7 @@ def main():
 
 			raise Exception
 		if len(url) == 0:
-			print u"输入的网址有误(url invalid)";
+			print u"输入的网址有误(url invalid)或查看帮助 -h";
 			raise Exception
 
 		if url.find('http://') == -1: url = 'http://' + url
