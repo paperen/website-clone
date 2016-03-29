@@ -13,3 +13,5 @@ __例子(example)__
 
 * py clone.py -u paperen.com
 * clone -u paperen.com -d test (windows下)
+
+[http://paperen.com/post/website-clone](http://paperen.com/post/website-clone "扒站小能手")
