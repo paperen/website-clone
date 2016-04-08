@@ -12,6 +12,7 @@ class thief:
 		self._op = urllib.FancyURLopener({})
 		self._domain = d
 		self._siteurl = 'http://'+self._domain+'/'
+		print self._siteurl
 		if  r == None :
 			self._root = sys.path[0] + os.path.sep + self._domain.replace('/', os.path.sep).strip(os.path.sep)+os.path.sep
 		else :
@@ -20,7 +21,11 @@ class thief:
 
 	# 爬取文件 & 建立目录
 	def get(self,something):
-		d = self.create_dir(something.replace('http://'+self._domain, ''),False)
+		something = something.replace('http://'+self._domain, '')
+		something = something.replace('https://'+self._domain, '')
+		if something.find('http://') != -1 or something.find('https://') != -1:
+			return something
+		d = self.create_dir(something,False)
 		if d[1] != '' and d[1] != None:
 			data = self.read(something)
 			self.save(data,d[0]+d[1])
@@ -66,5 +71,5 @@ class thief:
 		url = "/".join(t)+'/'
 		img = re.findall(r"url\((.*?)\)", data)
 		for v in img:
-			self.get(url+v)
+			self.get(url+v.strip('\''))
 		 

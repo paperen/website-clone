@@ -48,7 +48,7 @@ def main():
 
 			raise Exception
 		if len(url) == 0:
-			print u"输入的网址有误(url invalid)或查看帮助 -h";
+			print u"输入的网址有误(url invalid)";
 			raise Exception
 
 		if url.find('http://') == -1: url = 'http://' + url
@@ -59,10 +59,12 @@ def main():
 			domain = url.replace('http://', '').strip('/')
 		else:
 			domain = url_list[0]
+		if url_list[-1].find('.') != -1:
+			url_list.pop()
+			domain = '/'.join(url_list)
 		if domain == '':
 			print u"输入的网址有误(url invalid)";
 			raise Exception
-
 		t = core.thief(domain,root)
 
 		# 爬取网页
@@ -78,7 +80,7 @@ def main():
 		# <link rel="stylesheet" type="text/css" href="http://events.hytera.com/theme/hytera/common.css" media="all" />
 		# <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
 		sys.stdout.write( u"开始爬取css" )
-		css = re.findall(r"<\s*link\s+[^>]*href\s*=\s*[\"|\'](.*?)[\"|\'][^>]+[\s\S]*?>", html)
+		css = re.findall(r"<\s*link\s+[^>]+href\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>", html)
 		total = len(css)
 		for v in css:
 			if (v.find('http://') == -1 and v.find(domain) != -1) or v.find('.css') != -1:
