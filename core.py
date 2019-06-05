@@ -5,25 +5,28 @@
 import os,sys,urllib,re
 
 class thief:
-	_domain = ""
+	_url = ""
 	_root = ""
 	_siteurl = ""
-	def __init__(self,d,r):
+	def __init__(self,u,r):
 		self._op = urllib.FancyURLopener({})
-		self._domain = d
-		self._siteurl = 'http://'+self._domain+'/'
-		print self._siteurl
+		self._url = u
+		# 拼接根目录
+		url_list = u.split('/')
+		self._siteurl = url_list[0] + '//' + url_list[2]
+		print self._url
 		if  r == None :
-			self._root = sys.path[0] + os.path.sep + self._domain.replace('/', os.path.sep).strip(os.path.sep)+os.path.sep
+			self._root = sys.path[0] + os.path.sep + url_list[2]+os.path.sep
 		else :
 			self._root = r+os.path.sep
 		self.create_dir(self._root,True)
 
 	# 爬取文件 & 建立目录
 	def get(self,something):
-		something = something.replace('http://'+self._domain, '')
-		something = something.replace('https://'+self._domain, '')
-		if something.find('http://') != -1 or something.find('https://') != -1:
+		something = something.replace(self._siteurl, '')
+		# print something
+		if re.search(r"^((https://|http://|//)+)[^\s]+",something) != None:
+			# print '远程地址不处理'
 			return something
 		d = self.create_dir(something,False)
 		if d[1] != '' and d[1] != None:
@@ -33,7 +36,8 @@ class thief:
 			# 判断是否是CSS
 			if d[1].split('.').pop() == 'css':
 				self.parse_css(something,data)
-		return something.replace('http://'+self._domain, '').strip('/')
+
+		return something.replace(self._siteurl, '').strip('/')
 
 	# [返回本地文件夹路径,文件名]
 	def create_dir(self,d,is_root):
@@ -52,8 +56,13 @@ class thief:
 		return [t + os.path.sep,f]
 
 	def read(self,url):
-		if url.find('http://'+self._domain) == -1:
-			url = 'http://'+self._domain+'/'+url
+		if url.find(self._siteurl) == -1:
+			# 根目录拼接
+			if url.find('/') == 0:
+				url = self._siteurl+'/'+url
+			# 相对路径拼接
+			else:
+				url = self._url+'/'+url
 		f = self._op.open(url)
 		return f.read()
 
@@ -71,5 +80,5 @@ class thief:
 		url = "/".join(t)+'/'
 		img = re.findall(r"url\((.*?)\)", data)
 		for v in img:
-			self.get(url+v.strip('\''))
+			if v.find('data:') == -1 : self.get(url+v.strip('\''))
 		 

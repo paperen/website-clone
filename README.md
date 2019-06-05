@@ -13,7 +13,7 @@ tion])
 
 __例子(example)__
 
-* py clone.py -u paperen.com
-* clone -u paperen.com -d test (windows下exe)
+* py clone.py -u http://paperen.com
+* clone -u http://paperen.com -d test (windows下exe)
 
 [http://paperen.com/post/website-clone](http://paperen.com/post/website-clone "扒站小能手")
