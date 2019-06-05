@@ -47,25 +47,12 @@ def main():
 			print u"保存路径不存在，请先创建该目录(directory not exists)";
 
 			raise Exception
-		if len(url) == 0:
+		if re.search(r"^((https|http)?:\/\/)[^\s]+",url) == None:
 			print u"输入的网址有误(url invalid)";
 			raise Exception
 
-		if url.find('http://') == -1: url = 'http://' + url
-		url_list = url.replace('http://', '').split('/')
 
-		# 获取域名
-		if url_list[0] == 'localhost':
-			domain = url.replace('http://', '').strip('/')
-		else:
-			domain = url_list[0]
-		if url_list[-1].find('.') != -1:
-			url_list.pop()
-			domain = '/'.join(url_list)
-		if domain == '':
-			print u"输入的网址有误(url invalid)";
-			raise Exception
-		t = core.thief(domain,root)
+		t = core.thief(url,root)
 
 		# 爬取网页
 		opener = urllib.FancyURLopener({})
@@ -80,14 +67,23 @@ def main():
 		# <link rel="stylesheet" type="text/css" href="http://events.hytera.com/theme/hytera/common.css" media="all" />
 		# <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
 		sys.stdout.write( u"开始爬取css" )
-		css = re.findall(r"<\s*link\s+[^>]+href\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>", html)
-		total = len(css)
+		css = re.findall(r"<\s*link\s+[^>]*?href\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>", html)
 		for v in css:
-			if (v.find('http://') == -1 and v.find(domain) != -1) or v.find('.css') != -1:
-				html = html.replace(v,t.get(v))
+			html = html.replace(v,t.get(v))
 			show_progress()
 		sys.stdout.flush()
 		print u"爬取css完成"
+
+		# 页面内css
+		# <style>body{background:url("images/bg.jpg")}</style>
+		# <body style="background:url("images/bg.jpg")">
+		sys.stdout.write( u"开始爬取页面内css" )
+		intercss = re.findall(r"url\((.*?)\)", html)
+		for v in intercss:
+			if v.find('data:') == -1 : html = html.replace(v,t.get(v))
+			show_progress()
+		sys.stdout.flush()
+		print u"爬取页面内css完成"
 
 		# js
 		# <script src="http://paperen.com/js/jquery-1.7.1.min.js"></script>
@@ -95,10 +91,8 @@ def main():
 		# <script src="http://fonts.googleapis.com/js/jquery-1.7.1.min.js"></script>
 		sys.stdout.write( u"开始爬取js" )
 		js = re.findall(r"<\s*script\s+[^>]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>", html)
-		total = len(js)
 		for v in js:
-			if (v.find('http://') == -1 or v.find(domain) != -1) and v.find('.js') != -1:
-				html = html.replace(v,t.get(v))
+			html = html.replace(v,t.get(v))
 			show_progress()
 		sys.stdout.flush()
 		print u"爬取js完成"
@@ -110,11 +104,8 @@ def main():
 		# <img src="/upload/2016/03/22/62150172eebd2d423c42cdc511446bd7.jpg" class="dpb main-banner-img">
 		sys.stdout.write( u"开始爬取图片" )
 		img = re.findall(r"<\s*img\s+[^>]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>", html)
-		pattern_img = re.compile(".*\.[jpg|jpeg|gif|png|bmp]")
-		total = len(img)
 		for v in img:
-			if (v.find('http://') == -1 or v.find(domain) != -1) and pattern_img.match(v) != None:
-				html = html.replace(v,t.get(v))
+			html = html.replace(v,t.get(v))
 			show_progress()
 		sys.stdout.flush()
 		print u"爬取图片完成"
