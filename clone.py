@@ -53,15 +53,14 @@ def main():
 
 		if url.find('http://') == -1: url = 'http://' + url
 		url_list = url.replace('http://', '').split('/')
-
 		# 获取域名
 		if url_list[0] == 'localhost':
 			domain = url.replace('http://', '').strip('/')
 		else:
 			domain = url_list[0]
-		if url_list[-1].find('.') != -1:
-			url_list.pop()
-			domain = '/'.join(url_list)
+		#if url_list[-1].find('.') != -1:
+		#	url_list.pop()
+		#	domain = '/'.join(url_list)
 		if domain == '':
 			print u"输入的网址有误(url invalid)";
 			raise Exception

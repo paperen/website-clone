@@ -28,7 +28,9 @@ class thief:
 		d = self.create_dir(something,False)
 		if d[1] != '' and d[1] != None:
 			data = self.read(something)
-			self.save(data,d[0]+d[1])
+			res = self.save(data,d[0]+d[1])
+			if res == 0:
+				return ""
 
 			# 判断是否是CSS
 			if d[1].split('.').pop() == 'css':
@@ -52,15 +54,24 @@ class thief:
 		return [t + os.path.sep,f]
 
 	def read(self,url):
-		if url.find('http://'+self._domain) == -1:
+		if url[0:2] == '//':
+			url = 'http:' + url
+		elif url.find('http://'+self._domain) == -1:
 			url = 'http://'+self._domain+'/'+url
-		f = self._op.open(url)
-		return f.read()
+		
+		try:
+			f = self._op.open(url)
+			return f.read()
+		except Exception:
+			return ""
 
 	def save(self,data,filename):
+		if os.path.isdir(filename):
+			return 0
 		fp = open(filename, 'wb')
 		fp.write(data)
 		fp.close()
+		return 1
 
 	def getroot(self):
 		return self._root
@@ -71,5 +82,11 @@ class thief:
 		url = "/".join(t)+'/'
 		img = re.findall(r"url\((.*?)\)", data)
 		for v in img:
-			self.get(url+v.strip('\''))
+			v = v.strip("\"")
+			if v.find('http') != -1:
+				self.get(v.strip('\''))
+			elif v[0:5] == 'data:':
+				continue
+			else:
+				self.get(url+v.strip('\''))
 		 
