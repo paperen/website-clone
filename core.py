@@ -62,7 +62,7 @@ class thief:
 				url = self._siteurl+'/'+url
 			# 相对路径拼接
 			else:
-				url = self._url+'/'+url
+				url = os.path.dirname(self._url)+'/'+url
 		f = self._op.open(url)
 		return f.read()
 
