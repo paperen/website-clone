@@ -78,7 +78,7 @@ def main():
 		# <style>body{background:url("images/bg.jpg")}</style>
 		# <body style="background:url("images/bg.jpg")">
 		sys.stdout.write( u"开始爬取页面内css" )
-		intercss = re.findall(r"url\((.*?)\)", html)
+		intercss = re.findall(r"background\:url\((.*?)\)", html)
 		for v in intercss:
 			if v.find('data:') == -1 : html = html.replace(v,t.get(v))
 			show_progress()
